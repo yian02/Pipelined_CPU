@@ -175,6 +175,17 @@ MEM_WB MEM_WB(
 
 );
 
+Forwarding_Unit Forwarding_Unit(
+    .clk_i  (clk_i),
+    .EX_RS1_i (),
+    .EX_RS2_i (),
+    .WB_RD_i (),
+    .WB_RegWrite_i (),
+    .MEM_RD_i (),
+    .MEM_RegWrite_i (),
+    .ForwardA_o (),
+    .ForwardB_o ()
+);
 
 
 endmodule
