@@ -51,7 +51,7 @@ Registers Registers(
 );
 
 MUX32 MUX_ALUSrc(
-    .data1_i    (ID_EX.RS2data_o),
+    .data1_i    (Forwarding_MUX_B.data_o),
     .data2_i    (ID_EX.sign_ext_o),
     .select_i   (ID_EX.ALUsrc_o),
     .data_o     ()
@@ -70,7 +70,7 @@ Sign_Extend Sign_Extend(
 );
 
 ALU ALU(
-    .data1_i    (ID_EX.RS1data_o),
+    .data1_i    (Forwarding_MUX_A.data_o),
     .data2_i    (MUX_ALUSrc.data_o),
     .ALUCtrl_i  (ALU_Control.ALUCtrl_o),
     .data_o     (),
@@ -141,7 +141,7 @@ EX_MEM EX_MEM(
     .Zero_o (),
     .ALUresult_i (ALU.data_o),
     .ALUresult_o (),
-    .RS2data_i (ID_EX.RS2data_o),
+    .RS2data_i (Forwarding_MUX_B.data_o),
     .RS2data_o (),
     .RDaddr_i (ID_EX.RDaddr_o),
     .RDaddr_o (),
@@ -177,15 +177,30 @@ MEM_WB MEM_WB(
 
 Forwarding_Unit Forwarding_Unit(
     .clk_i  (clk_i),
-    .EX_RS1_i (),
-    .EX_RS2_i (),
-    .WB_RD_i (),
-    .WB_RegWrite_i (),
-    .MEM_RD_i (),
-    .MEM_RegWrite_i (),
+    .EX_RS1_i (ID_EX.instruction_o [19:15]),
+    .EX_RS2_i (ID_EX.instruction_o [24:20]),
+    .WB_RD_i (MEM_WB.RDaddr_o),
+    .WB_RegWrite_i (MEM_WB.RegWrite_o),
+    .MEM_RD_i (EX_MEM.RDaddr_o),
+    .MEM_RegWrite_i (EX_MEM.RegWrite_o),
     .ForwardA_o (),
     .ForwardB_o ()
 );
 
+Forwarding_MUX Forwarding_MUX_A(
+    .port00_i (ID_EX.RS1data_o),
+    .port01_i (MUX_MemtoReg.data_o),
+    .port10_i (EX_MEM.ALUresult_o),
+    .select_i (Forwarding_Unit.ForwardA_o),
+    .data_o   ()
+);
+
+Forwarding_MUX Forwarding_MUX_B(
+    .port00_i (ID_EX.RS2data_o),
+    .port01_i (MUX_MemtoReg.data_o),
+    .port10_i (EX_MEM.ALUresult_o),
+    .select_i (Forwarding_Unit.ForwardB_o),
+    .data_o   ()
+);
 
 endmodule

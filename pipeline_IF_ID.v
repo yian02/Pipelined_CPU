@@ -14,8 +14,7 @@ input       [31:0]      instruction_i;
 output reg  [31:0]      pc_o;
 output reg  [31:0]      instruction_o;
 
-
-always@(posedge clk_i) begin
+always@(pc_i) begin
     pc_o <= pc_i;
     instruction_o <= instruction_i;
 end
