@@ -40,11 +40,11 @@ Instruction_Memory Instruction_Memory(
 
 Registers Registers(
     .clk_i      (clk_i),
-    .RS1addr_i  (Instruction_Memory.instr_o [19:15]),
-    .RS2addr_i  (Instruction_Memory.instr_o [24:20]),
-    .RDaddr_i   (Instruction_Memory.instr_o [11:7]), 
-    .RDdata_i   (MUX_MemtoReg.data_o),
-    .RegWrite_i (Control.RegWrite_o), 
+    .RS1addr_i  (IF_ID.instruction_o [19:15]),
+    .RS2addr_i  (IF_ID.instruction_o [24:20]),
+    .RDaddr_i   (IF_ID.instruction_o [11:7]), 
+    .RDdata_i   (MUX_MemtoReg.data_o), // not done with pipeline
+    .RegWrite_i (Control.RegWrite_o), // not done with pipeline
     .RS1data_o   (), 
     .RS2data_o   () 
 );
@@ -64,7 +64,7 @@ MUX32 MUX_MemtoReg(
 );
 
 Sign_Extend Sign_Extend(
-    .instruction_i     (Instruction_Memory.instr_o),
+    .instruction_i     (IF_ID.instruction_o),
     .data_o     ()
 );
 
@@ -90,5 +90,53 @@ Data_Memory Data_Memory(
     .data_i (Registers.RS2data_o),
     .data_o ()
 );
+
+IF_ID IF_ID(
+    .clk_i (clk_i),
+    .pc_i (PC.pc_o),
+    .pc_o (),
+    .instruction_i (Instruction_Memory.instr_o),
+    .instruction_o ()
+
+);
+
+ID_EX ID_EX(
+    .clk_i (clk_i),
+    .pc_i (IF_ID.pc_o), 
+    .pc_o (), 
+    .RS1data_i ( Registers.RS1data_o ), 
+    .RS1data_o(), 
+    .RS2data_i (Registers.RS2data_o),
+    .RS2data_o(),
+    .RDaddr_i (IF_ID.instruction_o [11:7]), 
+    .RDaddr_o (),
+    .sign_ext_i (Sign_Extend.data_o), 
+    .sign_ext_o()  
+);
+
+EX_MEM EX_MEM(
+    .clk_i (clk_i),
+    .pc_i (ID_EX.pc_o), // may change to another ALU output when implementing beq
+    .pc_o (),
+    .Zero_i (ALU.Zero_o),
+    .Zero_o (),
+    .ALUresult_i (ALU.data_o),
+    .ALUresult_o (),
+    .RS2data_i (ID_EX.RS2data_o),
+    .RS2data_o (),
+    .RDaddr_i (ID_EX.RDaddr_o),
+    .RDaddr_o ()
+);
+
+MEM_WB MEM_WB(
+    .RDaddr_i (EX_MEM.RDaddr_o),
+    .RDaddr_o (),
+    .ALUresult_i (EX_MEM.ALUresult_o),
+    .ALUresult_o (),
+    .MEMdata_i (Data_Memory.data_o),
+    .MEMdata_o ()
+);
+
+
 
 endmodule

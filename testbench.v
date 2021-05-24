@@ -33,7 +33,7 @@ initial begin
     for(i=0; i<32; i=i+1) begin
         CPU.Data_Memory.memory[i] = 32'b0;
     end    
-    CPU.Data_Memory.memory[0] = 5;
+    CPU.Data_Memory.memory[0] = 5; // original
     CPU.Data_Memory.memory[1]=  6;
     CPU.Data_Memory.memory[2] = 10;
     CPU.Data_Memory.memory[3] = 18;
@@ -60,6 +60,7 @@ initial begin
     // Load instructions into instruction memory
     // Make sure you change back to "instruction.txt" before submission
     $readmemb("instruction_1.txt", CPU.Instruction_Memory.memory);
+
     
     // Open output file
     // Make sure you change back to "output.txt" before submission
