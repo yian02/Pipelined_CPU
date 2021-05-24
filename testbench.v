@@ -45,6 +45,16 @@ initial begin
         CPU.Registers.register[i] = 32'b0;
     end
     // [RegisterInitialization] DO NOT REMOVE THIS FLAG !!!
+    CPU.Control.ALUOp_o = 3'b0;
+    CPU.Control.ALUSrc_o = 1'b0;
+    CPU.Control.RegWrite_o = 1'b0;
+    CPU.Control.MemtoReg_o = 1'b0;
+    CPU.Control.MemRead_o = 1'b0;
+    CPU.Control.MemWrite_o = 1'b0;
+    CPU.Sign_Extend.data_o = 32'b0;
+    
+
+    CPU.PC.pc_o = 32'b0;
     CPU.Registers.register[24] = -24;
     CPU.Registers.register[25] = -25;
     CPU.Registers.register[26] = -26;
@@ -55,6 +65,39 @@ initial begin
     CPU.Registers.register[31] = 62;
 
     // TODO: initialize your pipeline registers
+    //IF_ID
+    CPU.IF_ID.pc_o = 32'd0;
+    CPU.IF_ID.instruction_o = 32'd0;
+    //ID_EX
+    CPU.ID_EX.pc_o = 32'b0;
+    CPU.ID_EX.RS1data_o = 32'b0;
+    CPU.ID_EX.RS2data_o = 32'b0;
+    CPU.ID_EX.RDaddr_o = 5'b0;
+    CPU.ID_EX.sign_ext_o = 32'd0;
+    CPU.ID_EX.ALUsrc_o = 1'b0;
+    CPU.ID_EX.ALUOp_o = 2'b0;
+    CPU.ID_EX.instruction_o = 32'b0;
+    CPU.ID_EX.MemWrite_o = 1'b0;
+    CPU.ID_EX.MemRead_o = 1'b0;
+    CPU.ID_EX.MemtoReg_o = 1'b0;
+    CPU.ID_EX.RegWrite_o = 1'b0;
+    //EX_MEM
+    CPU.EX_MEM.pc_o = 32'b0;
+    CPU.EX_MEM.Zero_o = 1'b0;
+    CPU.EX_MEM.ALUresult_o = 32'b0;
+    CPU.EX_MEM.RS2data_o = 32'b0;
+    CPU.EX_MEM.RDaddr_o = 5'b0;
+    CPU.EX_MEM.MemWrite_o = 1'b0;
+    CPU.EX_MEM.MemRead_o = 1'b0;
+    CPU.EX_MEM.MemtoReg_o = 1'b0;
+    CPU.EX_MEM.RegWrite_o = 1'b0;
+    //MEM_WB
+    CPU.MEM_WB.RDaddr_o = 5'b0;
+    CPU.MEM_WB.ALUresult_o = 32'b0;
+    CPU.MEM_WB.MEMdata_o = 32'b0;
+    CPU.MEM_WB.MemtoReg_o = 1'b0;
+    CPU.MEM_WB.RegWrite_o = 1'b0;
+
 
     
     // Load instructions into instruction memory

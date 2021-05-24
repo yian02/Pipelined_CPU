@@ -11,7 +11,8 @@ input               rst_i;
 input               start_i;
 
 Control Control(
-    .Op_i       (Instruction_Memory.instr_o[6:0]),
+    .clk_i      (clk_i),
+    .Op_i       (IF_ID.instruction_o[6:0]),
     .ALUOp_o    (),
     .ALUSrc_o   (),
     .RegWrite_o ()
@@ -42,25 +43,25 @@ Registers Registers(
     .clk_i      (clk_i),
     .RS1addr_i  (IF_ID.instruction_o [19:15]),
     .RS2addr_i  (IF_ID.instruction_o [24:20]),
-    .RDaddr_i   (IF_ID.instruction_o [11:7]), 
+    .RDaddr_i   (MEM_WB.RDaddr_o), 
     .RDdata_i   (MUX_MemtoReg.data_o), // not done with pipeline
-    .RegWrite_i (Control.RegWrite_o), // not done with pipeline
+    .RegWrite_i (MEM_WB.RegWrite_o), // not done with pipeline
     .RS1data_o   (), 
     .RS2data_o   () 
 );
 
 MUX32 MUX_ALUSrc(
-    .data1_i    (Registers.RS2data_o),
-    .data2_i    (Sign_Extend.data_o),
-    .select_i   (Control.ALUSrc_o),
+    .data1_i    (ID_EX.RS2data_o),
+    .data2_i    (ID_EX.sign_ext_o),
+    .select_i   (ID_EX.ALUsrc_o),
     .data_o     ()
 );
 
 MUX32 MUX_MemtoReg(
-    .data1_i    (ALU.data_o),
-    .data2_i    (Data_Memory.data_o),
-    .select_i   (Control.MemtoReg_o),
-    .data_o      ()
+    .data1_i    (MEM_WB.ALUresult_o),
+    .data2_i    (MEM_WB.MEMdata_o),
+    .select_i   (MEM_WB.MemtoReg_o),
+    .data_o     ()
 );
 
 Sign_Extend Sign_Extend(
@@ -69,7 +70,7 @@ Sign_Extend Sign_Extend(
 );
 
 ALU ALU(
-    .data1_i    (Registers.RS1data_o),
+    .data1_i    (ID_EX.RS1data_o),
     .data2_i    (MUX_ALUSrc.data_o),
     .ALUCtrl_i  (ALU_Control.ALUCtrl_o),
     .data_o     (),
@@ -77,17 +78,17 @@ ALU ALU(
 );
 
 ALU_Control ALU_Control(
-    .funct_i    ({Instruction_Memory.instr_o[31:25],Instruction_Memory.instr_o[14:12]}),
-    .ALUOp_i    (Control.ALUOp_o),
+    .funct_i    ({ID_EX.instruction_o[31:25],ID_EX.instruction_o[14:12]}),
+    .ALUOp_i    (ID_EX.ALUOp_o),
     .ALUCtrl_o  ()
 );
 
 Data_Memory Data_Memory(
     .clk_i(clk_i), 
-    .addr_i (ALU.data_o), 
-    .MemRead_i (Control.MemRead_o),
-    .MemWrite_i (Control.MemWrite_o),
-    .data_i (Registers.RS2data_o),
+    .addr_i (EX_MEM.ALUresult_o), 
+    .MemRead_i (EX_MEM.MemRead_o),
+    .MemWrite_i (EX_MEM.MemWrite_o),
+    .data_i (EX_MEM.RS2data_o),
     .data_o ()
 );
 
@@ -111,7 +112,25 @@ ID_EX ID_EX(
     .RDaddr_i (IF_ID.instruction_o [11:7]), 
     .RDaddr_o (),
     .sign_ext_i (Sign_Extend.data_o), 
-    .sign_ext_o()  
+    .sign_ext_o(), 
+    //###Pipline Control Signals###
+    //EXE stage control signals
+    .ALUsrc_i (Control.ALUSrc_o),
+    .ALUsrc_o (),
+    .ALUOp_i (Control.ALUOp_o),
+    .ALUOp_o (),
+    .instruction_i (IF_ID.instruction_o),
+    .instruction_o (),
+    //MEM stage control signals
+    .MemWrite_i (Control.MemWrite_o),
+    .MemWrite_o (),
+    .MemRead_i (Control.MemRead_o),
+    .MemRead_o (),
+    //WB stage control signals
+    .MemtoReg_i (Control.MemtoReg_o),
+    .MemtoReg_o (), 
+    .RegWrite_i (Control.RegWrite_o),
+    .RegWrite_o ()
 );
 
 EX_MEM EX_MEM(
@@ -125,16 +144,35 @@ EX_MEM EX_MEM(
     .RS2data_i (ID_EX.RS2data_o),
     .RS2data_o (),
     .RDaddr_i (ID_EX.RDaddr_o),
-    .RDaddr_o ()
+    .RDaddr_o (),
+    //###Pipline Control Signals###
+    //MEM stage control signals
+    .MemWrite_i (ID_EX.MemWrite_o),
+    .MemWrite_o (),
+    .MemRead_i (ID_EX.MemRead_o),
+    .MemRead_o (),
+    //WB stage control signals
+    .MemtoReg_i (ID_EX.MemtoReg_o),
+    .MemtoReg_o (),
+    .RegWrite_i (ID_EX.RegWrite_o),
+    .RegWrite_o ()
 );
 
 MEM_WB MEM_WB(
+    .clk_i (clk_i),
     .RDaddr_i (EX_MEM.RDaddr_o),
     .RDaddr_o (),
     .ALUresult_i (EX_MEM.ALUresult_o),
     .ALUresult_o (),
     .MEMdata_i (Data_Memory.data_o),
-    .MEMdata_o ()
+    .MEMdata_o (),
+    //###Pipline Control Signals###
+    //WB stage control signals
+    .MemtoReg_i (EX_MEM.MemtoReg_o),
+    .MemtoReg_o (),
+    .RegWrite_i (EX_MEM.RegWrite_o),
+    .RegWrite_o ()
+
 );
 
 

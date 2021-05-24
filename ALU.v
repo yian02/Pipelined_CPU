@@ -22,7 +22,7 @@ output Zero_o;
 
 assign Zero_o = data_o == 0 ? 1 : 0;
 
-always@(data1_i, data2_i, ALUCtrl_i)
+always@(data1_i or data2_i or ALUCtrl_i)
 begin
 case (ALUCtrl_i)
     `ADD: data_o = data1_i + data2_i;
@@ -32,6 +32,7 @@ case (ALUCtrl_i)
     `XOR: data_o = data1_i ^ data2_i;
     `SLL: data_o = data1_i << data2_i;
     `SRA: data_o = data1_i >>> data2_i[4:0];
+    default: data_o = 32'b0;
 endcase
 end
 

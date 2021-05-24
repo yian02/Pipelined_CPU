@@ -19,7 +19,7 @@ output reg [2:0] ALUCtrl_o;
 assign funct7 = funct_i [9:3];
 assign funct3 = funct_i [2:0];
 
-always@(funct_i,ALUOp_i)
+always@(funct_i or ALUOp_i)
 begin
     case (ALUOp_i)
     2'b00: begin
@@ -43,6 +43,7 @@ begin
             3'b010: ALUCtrl_o <= `ADD;
         endcase
     end
+    default: ALUCtrl_o <= 3'b0;
     endcase
 end
 

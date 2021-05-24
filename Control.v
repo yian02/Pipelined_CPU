@@ -5,6 +5,7 @@
 `define BEQ    7'b1100011
 
 module Control(
+    clk_i,
     Op_i,
     ALUOp_o,
     ALUSrc_o,
@@ -15,6 +16,7 @@ module Control(
     MemWrite_o
 );
 
+input clk_i;
 input [6:0] Op_i;
 output reg [1:0] ALUOp_o;
 output reg ALUSrc_o;

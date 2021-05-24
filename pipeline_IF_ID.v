@@ -8,11 +8,11 @@ module IF_ID
 );
 
 // Ports
-input               clk_i;
-input   [31:0]      pc_i;
-input   [31:0]      instruction_i;
+input                   clk_i;
+input       [31:0]      pc_i;
+input       [31:0]      instruction_i;
 output reg  [31:0]      pc_o;
-output reg  [31:0]  instruction_o;
+output reg  [31:0]      instruction_o;
 
 
 always@(posedge clk_i) begin
