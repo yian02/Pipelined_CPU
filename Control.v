@@ -13,7 +13,8 @@ module Control(
     // to supprot data memory
     MemtoReg_o,
     MemRead_o,
-    MemWrite_o
+    MemWrite_o,
+    Branch_o
 );
 
 input clk_i;
@@ -24,7 +25,7 @@ output reg RegWrite_o;
 output reg MemtoReg_o;
 output reg MemRead_o;
 output reg MemWrite_o;
-
+output Branch_o
 
 
 always@(Op_i)
@@ -37,6 +38,7 @@ case (Op_i)
             MemtoReg_o <= 1'b0;
             MemRead_o <= 1'b0;
             MemWrite_o <= 1'b0;
+            Branch_o <=1'b0;
         end    
     `I_Type: begin
             ALUSrc_o <= 1'b1;
@@ -45,6 +47,7 @@ case (Op_i)
             MemtoReg_o <= 1'b0;
             MemRead_o <= 1'b0;
             MemWrite_o <= 1'b0;
+            Branch_o <=1'b0;
         end
     `LW: begin//not done
             ALUSrc_o <= 1'b1;
@@ -53,6 +56,7 @@ case (Op_i)
             MemtoReg_o <= 1'b1;
             MemRead_o <= 1'b1;
             MemWrite_o <= 1'b0;
+            Branch_o <=1'b0;
         end    
     `SW: begin//not done
         //$fdisplay(1, "SW\n");
@@ -62,6 +66,7 @@ case (Op_i)
             MemtoReg_o <= 1'b0;
             MemRead_o <= 1'b0;
             MemWrite_o <= 1'b1;
+            Branch_o <=1'b0;
         end    
     `BEQ: begin//not done
             ALUSrc_o <= 1'b1;
@@ -70,12 +75,14 @@ case (Op_i)
             MemtoReg_o <= 1'b0;
             MemRead_o <= 1'b0;
             MemWrite_o <= 1'b0;
+            Branch_o <=1'b1;
         end    
     default:begin
             RegWrite_o <= 1'b0;
             MemtoReg_o <= 1'b0;
             MemRead_o <= 1'b0;
             MemWrite_o <= 1'b0;
+            Branch_o <=1'b0;
         end    
 endcase
 end
