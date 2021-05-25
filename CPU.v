@@ -203,4 +203,14 @@ Forwarding_MUX Forwarding_MUX_B(
     .data_o   ()
 );
 
+Hazard_Detection Hazard_Detection(
+    .ID_EX_MEMRead_i (ID_EX.MemRead_o),
+    .ID_EX_RDaddr_i (ID_EX.RDaddr_o),
+    .IF_ID_RS1addr_i (IF_ID.instruction_o [19:15]),
+    .IF_ID_RS2addr_i (IF_ID.instruction_o [24:20]),
+    .PCWrite_o (),
+    .IF_ID_Write_o (),
+    .Stall_o ()
+);
+
 endmodule

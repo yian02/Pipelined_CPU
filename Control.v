@@ -25,7 +25,7 @@ output reg RegWrite_o;
 output reg MemtoReg_o;
 output reg MemRead_o;
 output reg MemWrite_o;
-output Branch_o
+output reg Branch_o;
 
 
 always@(Op_i)
