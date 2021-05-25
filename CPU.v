@@ -13,6 +13,7 @@ input               start_i;
 Control Control(
     .clk_i      (clk_i),
     .Op_i       (IF_ID.instruction_o[6:0]),
+    .Stall_i    (Hazard_Detection.Stall_o),
     .ALUOp_o    (),
     .ALUSrc_o   (),
     .RegWrite_o ()
@@ -30,7 +31,7 @@ PC PC(
     .start_i    (start_i),
     .pc_i       (Add_PC.data_o),
     .pc_o       (),
-    .PCWrite_i (1'b1)// ###########must remove#############
+    .PCWrite_i  ( Hazard_Detection.PCWrite_o )
 
 );
 
@@ -44,8 +45,8 @@ Registers Registers(
     .RS1addr_i  (IF_ID.instruction_o [19:15]),
     .RS2addr_i  (IF_ID.instruction_o [24:20]),
     .RDaddr_i   (MEM_WB.RDaddr_o), 
-    .RDdata_i   (MUX_MemtoReg.data_o), // not done with pipeline
-    .RegWrite_i (MEM_WB.RegWrite_o), // not done with pipeline
+    .RDdata_i   (MUX_MemtoReg.data_o),
+    .RegWrite_i (MEM_WB.RegWrite_o),
     .RS1data_o   (), 
     .RS2data_o   () 
 );
@@ -95,6 +96,7 @@ Data_Memory Data_Memory(
 IF_ID IF_ID(
     .clk_i (clk_i),
     .pc_i (PC.pc_o),
+    .IF_ID_Write_i (Hazard_Detection.IF_ID_Write_o),
     .pc_o (),
     .instruction_i (Instruction_Memory.instr_o),
     .instruction_o ()

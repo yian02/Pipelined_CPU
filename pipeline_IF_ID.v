@@ -2,6 +2,7 @@ module IF_ID
 (
     clk_i,
     pc_i,
+    IF_ID_Write_i,
     pc_o,
     instruction_i,
     instruction_o
@@ -11,11 +12,15 @@ module IF_ID
 input                   clk_i;
 input       [31:0]      pc_i;
 input       [31:0]      instruction_i;
+input                   IF_ID_Write_i;
 output reg  [31:0]      pc_o;
 output reg  [31:0]      instruction_o;
 
 always@(pc_i) begin
-    pc_o <= pc_i;
-    instruction_o <= instruction_i;
+    if(IF_ID_Write_i == 1)
+    begin
+        pc_o <= pc_i;
+        instruction_o <= instruction_i;
+    end
 end
 endmodule
