@@ -3,6 +3,7 @@ module IF_ID
     clk_i,
     pc_i,
     IF_ID_Write_i,
+    Flush_i,
     pc_o,
     instruction_i,
     instruction_o
@@ -13,14 +14,21 @@ input                   clk_i;
 input       [31:0]      pc_i;
 input       [31:0]      instruction_i;
 input                   IF_ID_Write_i;
+input                   Flush_i;
 output reg  [31:0]      pc_o;
 output reg  [31:0]      instruction_o;
 
-always@(pc_i) begin
+always@( posedge clk_i ) 
+begin
     if(IF_ID_Write_i == 1)
     begin
         pc_o <= pc_i;
         instruction_o <= instruction_i;
+    end
+    if(Flush_i == 1)
+    begin
+        pc_o <= 32'b0;
+        instruction_o <= 32'b0;
     end
 end
 endmodule

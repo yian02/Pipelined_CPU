@@ -11,8 +11,12 @@ module ID_EX
     RS1data_o,  // 32 bits
     RS2data_o,  // 32 bits
     RDaddr_o,   // 5 bits
-    sign_ext_o,  // 32 bits
-    //###Pipline Control Signals###
+    sign_ext_o, // 32 bits
+    /**
+
+    Pipline Control Signals
+
+    **/
     //EXE stage control signals
     ALUsrc_i,
     ALUOp_i,
@@ -45,7 +49,11 @@ output reg  [31:0]      RS1data_o;  // 32 bits
 output reg  [31:0]      RS2data_o;  // 32 bits
 output reg  [4:0]       RDaddr_o;   // 5 bits
 output reg  [31:0]      sign_ext_o;
-//###Control Signals###
+/**
+
+Pipline Control Signals###
+
+**/
 //EX stage control signal
 input       ALUsrc_i;
 input       [1:0]       ALUOp_i;
@@ -54,24 +62,29 @@ output reg  ALUsrc_o;
 output reg  [1:0]       ALUOp_o;
 output reg  [31:0]      instruction_o;
 //MEM stage control signal
-input       MemWrite_i;
-input       MemRead_i;
-output reg  MemWrite_o;
-output reg  MemRead_o;
+input                   MemWrite_i;
+input                   MemRead_i;
+output reg              MemWrite_o;
+output reg              MemRead_o;
 //WB stage control signal
-input       MemtoReg_i;
-input       RegWrite_i;
-output reg  MemtoReg_o;
-output reg  RegWrite_o;
+input                   MemtoReg_i;
+input                   RegWrite_i;
+output reg              MemtoReg_o;
+output reg              RegWrite_o;
 
 
-always@(posedge clk_i) begin
+always@( posedge clk_i ) 
+begin
     pc_o <= pc_i;
     RS1data_o <= RS1data_i;
     RS2data_o <= RS2data_i;
     RDaddr_o <= RDaddr_i;
     sign_ext_o <= sign_ext_i;
-    //###Control Signals###
+    /**
+
+    Pipline Control Signals###
+
+    **/
     //EX stage control signals
     ALUsrc_o <= ALUsrc_i;
     ALUOp_o <= ALUOp_i;

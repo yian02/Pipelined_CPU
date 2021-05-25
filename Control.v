@@ -30,7 +30,8 @@ output reg MemWrite_o;
 output reg Branch_o;
 
 
-always@(Op_i)
+always@(Op_i or Stall_i)
+//always@(posedge clk_i)
 begin
     if(Stall_i == 1)
     begin
@@ -71,7 +72,6 @@ begin
                     Branch_o <=1'b0;
                 end    
             `SW: begin//not done
-                //$fdisplay(1, "SW\n");
                     ALUSrc_o <= 1'b1;
                     RegWrite_o <= 1'b0;
                     ALUOp_o <=2'b10;

@@ -29,7 +29,7 @@ case (instruction_i[6:0])
         data_o <= { { 20{ instruction_i[31] } }, instruction_i[31:25], instruction_i[11:7]};
         end    
     `BEQ: begin
-        data_o <= { { 19{ instruction_i[31] } }, instruction_i[31], instruction_i[8], instruction_i[30:25], instruction_i[12:9], 1'b0};
+        data_o <= { { 19{ instruction_i[31] } }, instruction_i[31], instruction_i[7], instruction_i[30:25], instruction_i[11:8], 1'b0};
         end    
     default:begin
         data_o <= {32{1'b0}};

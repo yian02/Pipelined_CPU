@@ -97,12 +97,17 @@ initial begin
     CPU.MEM_WB.MEMdata_o = 32'b0;
     CPU.MEM_WB.MemtoReg_o = 1'b0;
     CPU.MEM_WB.RegWrite_o = 1'b0;
+    // Hazard Detection Unit
+    CPU.Hazard_Detection.IF_ID_Write_o = 1'b0;
+    CPU.Hazard_Detection.PCWrite_o = 1'b0;;
+    CPU.Hazard_Detection.Stall_o = 1'b0;
+
 
 
     
     // Load instructions into instruction memory
     // Make sure you change back to "instruction.txt" before submission
-    $readmemb("instruction_3.txt", CPU.Instruction_Memory.memory);
+    $readmemb("instruction.txt", CPU.Instruction_Memory.memory);
 
     
     // Open output file
@@ -125,10 +130,15 @@ always@(posedge Clk) begin
         $finish;
 
     // put in your own signal to count stall and flush
-
+    if(counter == 0)
+    begin
+        // Initialize IF_ID Registers
+        CPU.IF_ID.pc_o = 32'd0;
+        CPU.IF_ID.instruction_o = 32'd0;
+    end
     //###################### Must turn this on //######################
     if(CPU.Hazard_Detection.Stall_o == 1 && CPU.Control.Branch_o == 0)stall = stall + 1;
-    //if(CPU.Flush == 1)flush = flush + 1;  
+    if(CPU.Flush == 1)flush = flush + 1;  
     //###################### Must turn this on //######################
 
     // print PC

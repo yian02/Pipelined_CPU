@@ -21,7 +21,7 @@ input       MEM_RegWrite_i;
 output reg [1:0] ForwardA_o;
 output reg [1:0] ForwardB_o;
 
-always@(posedge clk_i or EX_RS1_i or EX_RS2_i or WB_RD_i or WB_RegWrite_i or MEM_RD_i or MEM_RegWrite_i)
+always@( posedge clk_i or EX_RS1_i or EX_RS2_i or WB_RD_i or WB_RegWrite_i or MEM_RD_i or MEM_RegWrite_i )
 begin
     // Forward A
     if( MEM_RegWrite_i && (MEM_RD_i != 5'b0) && (MEM_RD_i == EX_RS1_i) )

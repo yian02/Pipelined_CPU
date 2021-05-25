@@ -7,7 +7,11 @@ module MEM_WB
     RDaddr_o,
     ALUresult_o,
     MEMdata_o,
-    //###Pipline Control Signals###
+    /**
+
+    Pipline Control Signals
+
+    **/    
     //WB stage control signals
     MemtoReg_i,
     RegWrite_i,
@@ -23,18 +27,27 @@ input   [31:0]      MEMdata_i;
 output reg  [4:0]   RDaddr_o;
 output reg  [31:0]  ALUresult_o;
 output reg  [31:0]  MEMdata_o;
-//###Control Signals###
+/**
+
+Pipline Control Signals###
+
+**/
 //WB stage control signal
 input       MemtoReg_i;
 input       RegWrite_i;
 output reg  MemtoReg_o;
 output reg  RegWrite_o;
 
-always@(posedge clk_i) begin
+always@(posedge clk_i) 
+begin
     RDaddr_o <= RDaddr_i;
     ALUresult_o <= ALUresult_i;
     MEMdata_o <= MEMdata_i;
-    //###Control Signals###
+    /**
+
+    Pipline Control Signals###
+
+    **/
     // WB stage control signals
     MemtoReg_o <= MemtoReg_i;
     RegWrite_o <= RegWrite_i;
