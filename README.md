@@ -1,4 +1,3 @@
-# Pipelined-CPU (Work in Progress)
-
+# Pipelined-CPU
 ## A Simple Implementation of Pipelined-CPU
 
