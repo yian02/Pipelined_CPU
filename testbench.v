@@ -28,23 +28,21 @@ initial begin
     for(i=0; i<256; i=i+1) begin
         CPU.Instruction_Memory.memory[i] = 32'b0;
     end
-    
+
     // initialize data memory
     for(i=0; i<32; i=i+1) begin
         CPU.Data_Memory.memory[i] = 32'b0;
     end    
-    CPU.Data_Memory.memory[0] = 5; // original
-    CPU.Data_Memory.memory[1]=  6;
-    CPU.Data_Memory.memory[2] = 10;
-    CPU.Data_Memory.memory[3] = 18;
-    CPU.Data_Memory.memory[4] = 29;
-    // [D-MemoryInitialization] DO NOT REMOVE THIS FLAG !!!
         
     // initialize Register File
     for(i=0; i<32; i=i+1) begin
         CPU.Registers.register[i] = 32'b0;
     end
-    // [RegisterInitialization] DO NOT REMOVE THIS FLAG !!!
+
+    /*
+        Pipeline and Control Signal Registers Initialization
+    */
+    // Control Signals
     CPU.Control.ALUOp_o = 3'b0;
     CPU.Control.ALUSrc_o = 1'b0;
     CPU.Control.RegWrite_o = 1'b0;
@@ -52,19 +50,7 @@ initial begin
     CPU.Control.MemRead_o = 1'b0;
     CPU.Control.MemWrite_o = 1'b0;
     CPU.Sign_Extend.data_o = 32'b0;
-    
-
     CPU.PC.pc_o = 32'b0;
-    CPU.Registers.register[24] = -24;
-    CPU.Registers.register[25] = -25;
-    CPU.Registers.register[26] = -26;
-    CPU.Registers.register[27] = -27;
-    CPU.Registers.register[28] = 56;
-    CPU.Registers.register[29] = 58;
-    CPU.Registers.register[30] = 60;
-    CPU.Registers.register[31] = 62;
-
-    // TODO: initialize your pipeline registers
     //IF_ID
     CPU.IF_ID.pc_o = 32'd0;
     CPU.IF_ID.instruction_o = 32'd0;
@@ -102,9 +88,6 @@ initial begin
     CPU.Hazard_Detection.PCWrite_o = 1'b0;;
     CPU.Hazard_Detection.Stall_o = 1'b0;
 
-
-
-    
     // Load instructions into instruction memory
     // Make sure you change back to "instruction.txt" before submission
     $readmemb("instruction.txt", CPU.Instruction_Memory.memory);
@@ -129,24 +112,21 @@ always@(posedge Clk) begin
     if(counter == num_cycles)    // stop after num_cycles cycles
         $finish;
 
-    // put in your own signal to count stall and flush
     if(counter == 0)
     begin
-        // Initialize IF_ID Registers
+        // Initialize IF_ID Registers in the initial step (count == 0)
         CPU.IF_ID.pc_o = 32'd0;
         CPU.IF_ID.instruction_o = 32'd0;
     end
-    //###################### Must turn this on //######################
+    
+    // put in your own signal to count stall and flush
     if(CPU.Hazard_Detection.Stall_o == 1 && CPU.Control.Branch_o == 0)stall = stall + 1;
     if(CPU.Flush == 1)flush = flush + 1;  
-    //###################### Must turn this on //######################
 
     // print PC
-    // DO NOT CHANGE THE OUTPUT FORMAT
     $fdisplay(outfile, "cycle = %d, Start = %0d, Stall = %0d, Flush = %0d\nPC = %d", counter, Start, stall, flush, CPU.PC.pc_o);
     
     // print Registers
-    // DO NOT CHANGE THE OUTPUT FORMAT
     $fdisplay(outfile, "Registers");
     $fdisplay(outfile, "x0 = %d, x8  = %d, x16 = %d, x24 = %d", CPU.Registers.register[0], CPU.Registers.register[8] , CPU.Registers.register[16], CPU.Registers.register[24]);
     $fdisplay(outfile, "x1 = %d, x9  = %d, x17 = %d, x25 = %d", CPU.Registers.register[1], CPU.Registers.register[9] , CPU.Registers.register[17], CPU.Registers.register[25]);
@@ -158,7 +138,6 @@ always@(posedge Clk) begin
     $fdisplay(outfile, "x7 = %d, x15 = %d, x23 = %d, x31 = %d", CPU.Registers.register[7], CPU.Registers.register[15], CPU.Registers.register[23], CPU.Registers.register[31]);
 
     // print Data Memory
-    // DO NOT CHANGE THE OUTPUT FORMAT
     $fdisplay(outfile, "Data Memory: 0x00 = %10d", CPU.Data_Memory.memory[0]);
     $fdisplay(outfile, "Data Memory: 0x04 = %10d", CPU.Data_Memory.memory[1]);
     $fdisplay(outfile, "Data Memory: 0x08 = %10d", CPU.Data_Memory.memory[2]);
@@ -171,7 +150,6 @@ always@(posedge Clk) begin
     $fdisplay(outfile, "\n");
     
     counter = counter + 1;
-    $fdisplay(outfile,"Counter = ",counter, "\n");
 
       
 end
